@@ -18,6 +18,6 @@ steps:
         '--region=us-central1',
         '--allow-unauthenticated'
        # Allow unauthenticated access (remove if not needed)
-      ]
+    ]
   options:
     logging: CLOUD_LOGGING_ONLY
