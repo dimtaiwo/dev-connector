@@ -16,8 +16,8 @@ steps:
         '--image=gcr.io/$PROJECT_ID/devoconnector',
         '--platform=managed',
         '--region=us-central1',
-        '--allow-unauthenticated'
-       # Allow unauthenticated access (remove if not needed)
-    ]
-  options:
-    logging: CLOUD_LOGGING_ONLY
+        '--allow-unauthenticated' # Allow unauthenticated access (remove if not needed)
+      ]
+
+options:
+  logging: CLOUD_LOGGING_ONLY
