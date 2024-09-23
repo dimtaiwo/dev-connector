@@ -2,7 +2,7 @@
 FROM node:16-alpine AS build
 
 # Set working directory for React app
-WORKDIR /app
+WORKDIR /
 
 # Copy client/package.json and client/package-lock.json
 COPY client/package*.json ./client/
@@ -20,7 +20,7 @@ RUN cd client && npm run build
 FROM node:16-alpine
 
 # Set the working directory for the server
-WORKDIR /app
+WORKDIR /
 
 # Copy server-side package.json and package-lock.json
 COPY package*.json ./
