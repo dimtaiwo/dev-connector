@@ -11,7 +11,7 @@ COPY package*.json .
 RUN npm install
 
 # Copy the entire client folder to the container
-COPY . .
+COPY . /client/.
 
 # Build the React app for production
 RUN npm run build
