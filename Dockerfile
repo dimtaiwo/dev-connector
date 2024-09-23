@@ -1,29 +1,41 @@
+# Stage 1: Build React application
+FROM node:16-alpine AS build
 
-# Stage 1: Build the application
-FROM node:18-alpine as builder
+# Set working directory for React app
+WORKDIR /app
 
-WORKDIR /app/dev-connector
+# Copy client/package.json and client/package-lock.json
+COPY client/package*.json ./client/
 
-COPY package.json package-lock.json ./
+# Install dependencies for React
+RUN cd client && npm install
 
-RUN npm install --legacy-peer-deps --network-timeout=1000000
+# Copy the entire client folder to the container
+COPY client ./client
 
+# Build the React app for production
+RUN cd client && npm run build
+
+# Stage 2: Build the Node.js server
+FROM node:16-alpine
+
+# Set the working directory for the server
+WORKDIR /app
+
+# Copy server-side package.json and package-lock.json
+COPY package*.json ./
+
+# Install server-side dependencies
+RUN npm install
+
+# Copy the server-side code to the container
 COPY . .
 
-RUN npm run build
+# Copy the built React app from the previous stage to the public folder in server
+COPY --from=build /app/client/build ./client/build
 
-# Stage 2: Serve the application
-FROM node:18-alpine as runner
+# Expose the port your Node.js app runs on
+EXPOSE 5000
 
-ENV HOST 0.0.0.0
-
-WORKDIR /app/dev-connector
-
-COPY --from=builder /app/dev-connector ./
-
-# Set environment variables for Next.js
-ENV NEXT_PUBLIC_HOST=0.0.0.0
-ENV NEXT_PUBLIC_PORT=8080
-
-# Run the Next.js application with npm
-CMD ["npm", "start", "--", "-p", "8080"]
+# Start the server
+CMD ["npm", "start"]
