@@ -5,13 +5,13 @@ FROM node:16-alpine AS build
 WORKDIR /client
 
 # Copy client/package.json and client/package-lock.json
-COPY client/package*.json ./client/
+COPY package*.json .
 
 # Install dependencies for React
 RUN npm install
 
 # Copy the entire client folder to the container
-COPY client/ /client/
+COPY . /client/
 
 # Build the React app for production
 RUN npm run build
@@ -20,7 +20,7 @@ RUN npm run build
 FROM node:16-alpine
 
 # Set the working directory for the server
-WORKDIR /app
+WORKDIR /
 
 # Copy server-side package.json and package-lock.json
 COPY package*.json ./
@@ -29,14 +29,13 @@ COPY package*.json ./
 RUN npm install
 
 # Copy the server-side code to the container
-COPY . /app/
+COPY . ./
 
-# Copy the built React app from the previous stage to the public folder in the server
-COPY --from=build /client/build /app/client/build
+# Copy the built React app from the previous stage to the public folder in server
+COPY --from=build /client/build ./client/build
 
 # Expose the port your Node.js app runs on
 EXPOSE 5000
 
 # Start the server
 CMD ["npm", "start"]
-
